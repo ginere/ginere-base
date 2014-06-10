@@ -40,11 +40,10 @@
 	</parent>
 
 	<scm>
-		<connection>scm:git:https://github.com/ginere/ginere-jdbc-oracle</connection>
-		<developerConnection>scm:git:https://github.com/ginere/ginere-jdbc-oracle</developerConnection>
+		<connection>scm:git:https://github.com/ginere/ginere-base</connection>
+		<developerConnection>scm:git:https://github.com/ginere/ginere-base</developerConnection>
 
-		<url>https://github.com/ginere/ginere-jdbc-oracle</url>
-		<tag>ginere-jdbc-oracle-1.0.2</tag>
+		<url>https://github.com/ginere/ginere-base</url>
 	</scm>
 
 	<organization>
@@ -54,7 +53,7 @@
 
 	<ciManagement>
 		<system>Continnuum</system>
-		<url>http://localhost:8888/continuum/</url>
+		<url>http://localhost:8888/jenkins/</url>
 	</ciManagement>
 
 	<build>

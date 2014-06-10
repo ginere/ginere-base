@@ -1,6 +1,6 @@
 package ginere.base.util.dao.cache.impl;
 
-import ginere.base.util.dao.KeyDTO;
+import eu.ginere.base.util.dao.KeyDTO;
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;

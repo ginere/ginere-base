@@ -1,7 +1,7 @@
 package ginere.base.util.notification;
 
-import ginere.base.util.manager.AbstractManager;
-import ginere.base.util.notification.Notify;
+import eu.ginere.base.util.manager.AbstractManager;
+import eu.ginere.base.util.notification.Notify;
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;

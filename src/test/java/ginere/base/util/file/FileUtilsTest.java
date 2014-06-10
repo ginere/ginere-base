@@ -1,6 +1,6 @@
 package ginere.base.util.file;
 
-import ginere.base.util.file.FileUtils;
+import eu.ginere.base.util.file.FileUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;

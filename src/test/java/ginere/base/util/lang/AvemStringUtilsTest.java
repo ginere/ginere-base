@@ -1,6 +1,6 @@
 package ginere.base.util.lang;
 
-import ginere.base.util.lang.AvemStringUtils;
+import eu.ginere.base.util.lang.AvemStringUtils;
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.RandomStringUtils;

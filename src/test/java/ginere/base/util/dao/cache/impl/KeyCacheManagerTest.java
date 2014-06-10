@@ -1,7 +1,7 @@
 package ginere.base.util.dao.cache.impl;
 
-import ginere.base.util.dao.DaoManagerException;
-import ginere.base.util.dao.cache.impl.AbstractKeyCacheManager;
+import eu.ginere.base.util.dao.DaoManagerException;
+import eu.ginere.base.util.dao.cache.impl.AbstractKeyCacheManager;
 
 import org.apache.log4j.Logger;
 

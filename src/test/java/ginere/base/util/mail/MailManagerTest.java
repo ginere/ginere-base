@@ -1,7 +1,7 @@
 package ginere.base.util.mail;
 
-import ginere.base.util.mail.MailManager;
-import ginere.base.util.manager.AbstractManager;
+import eu.ginere.base.util.mail.MailManager;
+import eu.ginere.base.util.manager.AbstractManager;
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;

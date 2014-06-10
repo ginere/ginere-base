@@ -1,6 +1,6 @@
 package ginere.base.util.properties;
 
-import ginere.base.util.properties.GlobalFileProperties;
+import eu.ginere.base.util.properties.GlobalFileProperties;
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;

@@ -1,7 +1,7 @@
 package ginere.base.util.dao.cache.impl;
 
-import ginere.base.util.dao.cache.KeyCacheObject;
-import ginere.base.util.dao.cache.impl.AbstractKeyCacheObject;
+import eu.ginere.base.util.dao.cache.KeyCacheObject;
+import eu.ginere.base.util.dao.cache.impl.AbstractKeyCacheObject;
 
 
 /**
