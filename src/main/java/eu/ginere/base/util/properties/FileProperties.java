@@ -61,7 +61,7 @@ public class FileProperties {
 		InputStream in = new FileInputStream(fildes);		
 		InputStreamReader reader=new InputStreamReader(in,charset);
 		try {
-		fileProperties.load(reader);
+			fileProperties.load(reader);
 		
 			lastModified = fildes.lastModified();
 			if (log.isInfoEnabled()){
@@ -69,8 +69,8 @@ public class FileProperties {
 						 + fildes.getAbsolutePath() + "'");
 			}
 		}finally{
-			IOUtils.closeQuietly(in);
 			IOUtils.closeQuietly(reader);
+			IOUtils.closeQuietly(in);
 		}
 	}
 

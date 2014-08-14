@@ -12,6 +12,7 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Scanner;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -23,6 +24,17 @@ public class FileUtils {
 	
 	private static final DirFileFilter DIR_FILTER=new DirFileFilter();
 	
+	/**
+	 * Use this iterate to iterate on files.
+	 */
+	public static interface FileIterator{
+		/**
+		 * @param file current file to iterate on.
+		 * 
+		 * @return If false the iteration is stopped and the called iteration function will returns also false
+		 */
+		public boolean iterate(File file);
+	}
 	private static class DirFileFilter implements FileFilter {
 		 public boolean accept(File pathname) {
 			 if (pathname==null){
@@ -144,15 +156,19 @@ public class FileUtils {
 			return target;
 		}
 	}
+	
 	/**
 	 * Si root="/export/share-img y file="/export/share-img/2009/03/01/file.txt"
-	 * esto devuelve la cadena de caracteres "/2009/03/01/file.txt"
+	 * esto devuelve la cadena de caracteres "/2009/03/01/file.txt".
+	 * 
+	 * If both files are the same that return "/"
 	 * 
 	 * Si root es nulo o si root no es un directorio padre de file esta funcion devuelve file.getAbsolutePath()
 	 * @param root
 	 * @param relativePathToCreate
 	 * @return true si se pudo crear todo el path false si no se pudo crear
 	 *         algunos de los directorios necesarios
+	 *         @deprecated use getRelativePath(File file, File root,String defaultValue);
 	 */
 	public static String getRelativePath(File file, File root) {
 		if (root==null){
@@ -167,10 +183,92 @@ public class FileUtils {
 		String fileAbsolutePath=file.getAbsolutePath();
 		
 		if (fileAbsolutePath.startsWith(rootAbsolutePath)){
-			return fileAbsolutePath.substring(rootAbsolutePath.length());
+			String ret=fileAbsolutePath.substring(rootAbsolutePath.length());
+			if ("".equals(ret)){
+				return "/";
+			} else {
+				return ret;
+			}
 		} else {
 			return fileAbsolutePath;
 		}
+	}
+
+	/**
+	 * Si root="/export/share-img y file="/export/share-img/2009/03/01/file.txt"
+	 * esto devuelve la cadena de caracteres "/2009/03/01/file.txt".
+	 * 
+	 * If both files are the same that return "/"
+	 * 
+	 * Si root es nulo o si root no es un directorio padre de file esta funcion devuelve file.getAbsolutePath()
+	 * @param root
+	 * @param relativePathToCreate
+	 * @return true si se pudo crear todo el path false si no se pudo crear
+	 *         algunos de los directorios necesarios
+	 */
+	public static String getRelativePath(File file, File root,String defaultValue) {
+		if (root==null){
+			return file.getAbsolutePath();
+		}
+		
+		if (file==null){
+			return defaultValue;
+		}
+		
+		String rootAbsolutePath=root.getAbsolutePath();
+		String fileAbsolutePath=file.getAbsolutePath();
+		
+		if (fileAbsolutePath.startsWith(rootAbsolutePath)){
+			String ret=fileAbsolutePath.substring(rootAbsolutePath.length());
+			if ("".equals(ret)){
+				return "/";
+			} else {
+				return ret;
+			}
+		} else {
+			return defaultValue;
+		}
+	}
+
+
+	/**
+	 * Verifica que el directorio existe, que es un directorio y que tenemos
+	 * permisos de lectura y escritura. En caso de error devuelve false y escribe un log
+	 * 
+	 * @param dir
+	 * @return
+	 */
+	public static boolean verifyDir(File dir,Logger logger){
+		if (dir==null){
+			logger.error("El directorio es nulo.");
+			return false;
+		}
+		String fileName=dir.getAbsolutePath();
+		if (fileName==null){
+			return false;
+		}
+		
+		if (!dir.exists()){
+			logger.error("El path '"+fileName+"' no existe.");
+			return false;
+		}
+
+		if (!dir.isDirectory()){
+			logger.error("El path '"+fileName+"' no es un directorio.");
+			return false;
+		}
+		
+		if (!dir.canRead()){
+			logger.error("No tenemos permisos de lectura en el path '"+fileName+"'.");
+			return false;
+		}
+		
+		if (!dir.canWrite()){
+			logger.error("No tenemos permisos de escritura en el path '"+fileName+"'.");
+			return false;
+		}
+
+		return true;				
 	}
 
 	/**
@@ -181,39 +279,8 @@ public class FileUtils {
 	 * @return
 	 */
 	public static boolean verifyDir(File dir){
-		if (dir==null){
-			log.error("El directorio es nulo.");
-			return false;
-		}
-		String fileName=dir.getAbsolutePath();
-		if (fileName==null){
-			return false;
-		}
-		
-		if (!dir.exists()){
-			log.error("El path '"+fileName+"' no existe.");
-			return false;
-		}
-
-		if (!dir.isDirectory()){
-			log.error("El path '"+fileName+"' no es un directorio.");
-			return false;
-		}
-		
-		if (!dir.canRead()){
-			log.error("No tenemos permisos de lectura en el path '"+fileName+"'.");
-			return false;
-		}
-		
-		if (!dir.canWrite()){
-			log.error("No tenemos permisos de escritura en el path '"+fileName+"'.");
-			return false;
-		}
-
-		return true;				
-	}
-
-	
+		return verifyDir(dir,log);
+	}	
 
 	public static String verifyReadDir(File dir){
 		if (dir == null){
@@ -236,7 +303,16 @@ public class FileUtils {
 		return null;				
 	}
 	
-	
+	public static boolean verifyReadDir(File dir,Logger logger){
+		String error=verifyReadDir(dir);
+
+		if (error == null ) {
+			return true;
+		} else {
+			logger.error("verifyReadDir, file:"+dir.getAbsolutePath()+", error:"+error);
+			return false;
+		}
+	}	
 		
 	public static String verifyReadDir(String path){
 		if (path==null){
@@ -247,6 +323,18 @@ public class FileUtils {
 
 		return verifyReadDir(dir);		
 	}
+
+	public static boolean verifyReadDir(String path,Logger log){
+		String error=verifyReadDir(path);
+		
+		if (error == null ) {
+			return true;
+		} else {
+			log.error("verifyReadDir, file:'"+path+"', error:"+error);
+			return false;
+		}
+	}	
+		
 
 	/**
 	 * Verificamos que file es un fichero y que tenemos permisos de lectura
@@ -818,8 +906,92 @@ public class FileUtils {
 			return EMPTY_FILE_LIST;
 		} else {
 			return ret;
+		}		
+	}
+
+	/**
+	 * Iterate on all the files/dir of a folder no mather the type and the read state.
+	 * 
+	 * @param parentDir the parent folder where the chils to iterate on are.
+	 * @return
+	 */
+	public static boolean iterateFiles(File parentDir,FileIterator iterator) {		
+		if (parentDir==null){
+			log.warn("Parent dir is null");
+			return true;
+		} 
+
+		// verify that we can read dir.
+		String message=verifyReadDir(parentDir);
+		if (message !=null){
+			log.warn(message);
+			return true;
 		}
+
+
+		File childs[]=parentDir.listFiles();
 		
+		if (childs==null){
+			log.info("Parent dir:"+parentDir.getAbsolutePath()+" do not have child dirs");
+			return true;
+		} else {
+			for (File child:childs){
+				
+				boolean iteratorRet=iterator.iterate(child);
+				
+				if (iteratorRet==false){
+					if (log.isDebugEnabled()){
+						log.debug("Iterator returns false. Iteration on:"+parentDir.getAbsolutePath()+" stopped.");
+					}
+					return false;
+				}
+			}
+			
+			return true;
+		}		
+		
+	}
+
+	/**
+	 * Iterates on the folder pased on parameter only if the content can be readed.
+	 * Return false if the iterator returns false on a file.
+	 * 
+	 * @param parentDir the parent folder where the chils to iterate on are.
+	 * @return
+	 */
+	public static boolean iterateOnChildDirs(File parentDir,FileIterator iterator) {		
+		if (parentDir==null){
+			log.warn("Parent dir is null");
+			return true;
+		} 
+		
+		// verify that we can read dir.
+		String message=verifyReadDir(parentDir);
+		if (message !=null){
+			log.warn(message);
+			return true;
+		}
+
+		File childs[]=parentDir.listFiles(DIR_FILTER);
+		
+		if (childs==null){
+			log.info("Parent dir:"+parentDir.getAbsolutePath()+" do not have child dirs");
+			return true;
+		} else {
+			for (File child:childs){
+				
+				boolean iteratorRet=iterator.iterate(child);
+
+				if (iteratorRet==false){
+					if (log.isDebugEnabled()){
+						log.debug("Iterator returns false. Iteration on:"+parentDir.getAbsolutePath()+" stopped.");
+					}
+					return false;
+				}
+			}
+
+			return true;
+		}		
 	}
 
 	/**
@@ -849,6 +1021,21 @@ public class FileUtils {
 			return false;
 		}		
 	}
+
+	public static boolean canReadFile(File file,Logger logger) {		
+		if(file==null){
+			logger.warn("File is null");
+			return false;
+		}
+
+		if (file.isDirectory()){
+			logger.warn("Is a dir, file:"+file.getAbsolutePath()+"");
+			return false;
+		}
+
+		return file.canRead();
+	}
+
 	
 	/**
 	 * Devuelve true si es un fichero y se puede leer.
@@ -1069,5 +1256,16 @@ public class FileUtils {
 //				return false;
 //			}
 		}
+	}
+
+	public static String getString(File file,String defaultText,String charset) {
+		try {
+			String stringToParse = new Scanner(file,charset).useDelimiter("\\Z").next();
+
+			return stringToParse;
+		}catch(FileNotFoundException e){
+			log.error("While oppening file:"+file,e);
+			return defaultText;
+		}		
 	}
 }
