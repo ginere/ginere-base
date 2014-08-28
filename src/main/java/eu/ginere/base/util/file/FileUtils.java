@@ -22,7 +22,9 @@ public class FileUtils {
 
 	private static final File EMPTY_FILE_LIST[]=new File[0];
 	
-	private static final DirFileFilter DIR_FILTER=new DirFileFilter();
+	private static final DirFileFilterInner DIR_FILTER=new DirFileFilterInner();
+	
+	private static final FileFilterInner FILE_FILTER=new FileFilterInner();
 	
 	/**
 	 * Use this iterate to iterate on files.
@@ -35,11 +37,25 @@ public class FileUtils {
 		 */
 		public boolean iterate(File file);
 	}
-	private static class DirFileFilter implements FileFilter {
+	
+	private static class DirFileFilterInner implements FileFilter {
 		 public boolean accept(File pathname) {
 			 if (pathname==null){
 				 return false;
 			 } else if (pathname.isDirectory()){
+				 return true;
+			 } else {
+				 return false;
+			 }
+		 }
+		
+	}
+	
+	private static class FileFilterInner implements FileFilter {
+		 public boolean accept(File pathname) {
+			 if (pathname==null){
+				 return false;
+			 } else if (pathname.isFile()){
 				 return true;
 			 } else {
 				 return false;
@@ -994,6 +1010,50 @@ public class FileUtils {
 		}		
 	}
 
+	
+	
+	/**
+	 * Iterates on the folder pased on parameter only if the content can be readed.
+	 * Return false if the iterator returns false on a file.
+	 * 
+	 * @param parentDir the parent folder where the chils to iterate on are.
+	 * @return
+	 */
+	public static boolean iterateOnChildFilesOnly(File parentDir,FileIterator iterator) {		
+		if (parentDir==null){
+			log.warn("Parent dir is null");
+			return true;
+		} 
+		
+		// verify that we can read dir.
+		String message=verifyReadDir(parentDir);
+		if (message !=null){
+			log.warn(message);
+			return true;
+		}
+
+		File childs[]=parentDir.listFiles(FILE_FILTER);
+		
+		if (childs==null){
+			log.info("Parent dir:"+parentDir.getAbsolutePath()+" do not have child dirs");
+			return true;
+		} else {
+			for (File child:childs){
+				
+				boolean iteratorRet=iterator.iterate(child);
+
+				if (iteratorRet==false){
+					if (log.isDebugEnabled()){
+						log.debug("Iterator returns false. Iteration on:"+parentDir.getAbsolutePath()+" stopped.");
+					}
+					return false;
+				}
+			}
+
+			return true;
+		}		
+	}
+	
 	/**
 	 * Devuelve true si es un fichero y se puede leer.
 	 * @param abstolutePath el path absoluto de un fichero
