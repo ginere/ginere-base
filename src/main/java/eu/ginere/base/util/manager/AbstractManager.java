@@ -3,12 +3,13 @@ package eu.ginere.base.util.manager;
 import eu.ginere.base.util.file.FileUtils;
 import eu.ginere.base.util.properties.FileProperties;
 import eu.ginere.base.util.properties.GlobalFileProperties;
+import eu.ginere.base.util.test.TestInterface;
 
 import java.io.File;
 
 import org.apache.log4j.Logger;
 
-
+// TODO implements implements TestInterface
 public abstract class AbstractManager {
 	static protected final Logger log = Logger.getLogger(AbstractManager.class);
 	
