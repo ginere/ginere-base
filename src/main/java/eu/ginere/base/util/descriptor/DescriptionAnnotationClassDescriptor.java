@@ -1,7 +1,5 @@
 package eu.ginere.base.util.descriptor;
 
-import eu.ginere.base.util.descriptor.annotation.Description;
-
 import java.beans.IntrospectionException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -9,7 +7,10 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+
+import eu.ginere.base.util.descriptor.annotation.Description;
 
 /**
  * This generates the information of the class bases on the @Description annotation.
@@ -22,6 +23,7 @@ public class DescriptionAnnotationClassDescriptor<T> extends AbstractClassDescri
 	
 	protected final List<InnerPropertyDescriptor> list;
 	protected final Map<String,InnerPropertyDescriptor> map;
+	protected String propertyNames[]=null;;
 	
 	public DescriptionAnnotationClassDescriptor(Class<T> clazz) throws IntrospectionException{
 		super(clazz);
@@ -78,6 +80,59 @@ public class DescriptionAnnotationClassDescriptor<T> extends AbstractClassDescri
 	 */
 	public List<InnerPropertyDescriptor> getList() {
 		return list;
+	}
+
+	public String[] getPropertyNames() {
+		if (propertyNames == null){
+			propertyNames=new String[list.size()];
+			int i=0;
+			for ( InnerPropertyDescriptor prop:list){
+				propertyNames[i++]=prop.getName();
+			}
+		}
+
+		return propertyNames;
+	}
+
+	public String[] getStringValues(Object t,String propertyNames[]){
+		String ret[]=new String[propertyNames.length];
+		
+		int i=0;
+		for (String propName:propertyNames){
+			
+			ret[i++]=getProperyStringValue(t,propName);
+		}
+		
+		return ret;
+	}
+	
+	public String getProperyStringValue(Object t,String propertyName){
+		InnerPropertyDescriptor propertyDescriptor=get(propertyName);
+
+		return getStringValue(t,propertyDescriptor);
+	}
+	
+	public String getStringValue(Object t,InnerPropertyDescriptor propertyDescriptor){
+		Field field=(Field)propertyDescriptor.getAccessor();
+		
+		String stringValue;
+		try {
+			Object objectValue=field.get(t);
+			if (objectValue==null){
+				stringValue=null;
+			} else {
+				stringValue=objectValue.toString();
+			}
+
+			if (stringValue == null){
+				return StringUtils.EMPTY;
+			} else {
+				return stringValue;
+			}
+		} catch (IllegalAccessException e) {
+			log.error("Descriptor:"+propertyDescriptor+" propertyDescriptor:"+propertyDescriptor,e);
+			return StringUtils.EMPTY;
+		}
 	}
 
 	@Override
