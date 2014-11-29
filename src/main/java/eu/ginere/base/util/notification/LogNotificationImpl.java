@@ -99,8 +99,5 @@ class LogNotificationImpl implements NotificationImplInterface{
 	@Override
 	public Level getFatal() {
 		return FATAL;
-	}
-	
-	
-
+	}	
 }

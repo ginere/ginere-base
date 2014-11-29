@@ -16,6 +16,13 @@ public class Notify {
 			connector=LogNotificationImpl.SINGLETON;
 		}
 	}
+	
+	public static void setConnector(NotificationImplInterface c){
+		if (c!=null){
+			connector=c;
+		}
+	}
+	
 	public static boolean isDegubEnabled(){
 		return connector.getDebug().isEnabled();
 	}
