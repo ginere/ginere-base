@@ -69,7 +69,7 @@ public class FileUtils {
 	 * @author ventura
 	 *
 	 */
-	public static class ExtensionFilenameFilter implements FilenameFilter {
+	public static class ExtensionFilenameFilter implements FilenameFilter{
 		private final String extension;
 		private final boolean ignoreCase;
 
@@ -97,7 +97,6 @@ public class FileUtils {
 				return false;
 			}
 		}
-
 	}
 	
 	public static class FileNameComararator implements Comparator<File>{
@@ -968,7 +967,55 @@ public class FileUtils {
 		
 	}
 
+
+
 	/**
+	 * Iterate on all the files/dir of a folder no mather the type and the read state.
+	 * 
+	 * @param parentDir the parent folder where the chils to iterate on are.
+	 * @return
+	 */
+	public static boolean iterate(File parentDir, 
+								  FilenameFilter fileFilter,
+								  FileIterator iterator) {		
+		if (parentDir==null){
+			log.warn("Parent dir is null");
+			return true;
+		} 
+
+		// verify that we can read dir.
+		String message=verifyReadDir(parentDir);
+		if (message !=null){
+			log.warn(message);
+			return true;
+		}
+
+
+		File childs[]=parentDir.listFiles(fileFilter);
+		
+		if (childs==null){
+			log.info("Parent dir:"+parentDir.getAbsolutePath()+" do not have child dirs");
+			return true;
+		} else {
+			for (File child:childs){
+				
+				boolean iteratorRet=iterator.iterate(child);
+				
+				if (iteratorRet==false){
+					if (log.isDebugEnabled()){
+						log.debug("Iterator returns false. Iteration on:"+parentDir.getAbsolutePath()+" stopped.");
+					}
+					return false;
+				}
+			}
+			
+			return true;
+		}		
+		
+	}
+
+	/**
+	 * Iterate only on the childs of the parent folder
 	 * Iterates on the folder pased on parameter only if the content can be readed.
 	 * Return false if the iterator returns false on a file.
 	 * 
@@ -1327,5 +1374,13 @@ public class FileUtils {
 			log.error("While oppening file:"+file,e);
 			return defaultText;
 		}		
+	}
+	
+	public static boolean exists(File file){
+		if (file==null){
+			return false;
+		} else {
+			return file.exists();
+		}
 	}
 }
