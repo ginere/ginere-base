@@ -342,7 +342,7 @@ public class FileProperties {
 		fileProperties.clear();
 		if (!StringUtils.equals(filePath, fileName)) {
 			if (log.isInfoEnabled()){
-				log.info("setting the file proerties path to :'" + fileName + "'");
+				log.info("setting the file properties path to :'" + fileName + "'");
 			}
 			filePath = fileName;
 			if (filePath != null) {
