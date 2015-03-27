@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
@@ -1381,6 +1382,60 @@ public class FileUtils {
 			return false;
 		} else {
 			return file.exists();
+		}
+	}
+	
+	public static String BASE64_IMAGE_HEADER="data:image/jpeg;base64,";
+	
+	public static boolean isBase64Image(String base64){
+		// data:image/jpeg;base64,
+		if (base64== null || base64.length()<=BASE64_IMAGE_HEADER.length()){
+			return false;
+		} else {
+			if (base64.startsWith(BASE64_IMAGE_HEADER)){
+				return true;
+			} else {
+				String header=base64.substring(0, BASE64_IMAGE_HEADER.length()).toLowerCase();
+				
+				if (BASE64_IMAGE_HEADER.equals(header)){
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+	}
+	
+	public static String getBase64String(String base64){
+		if (base64==null){
+			return null;
+		} else {
+			if (isBase64Image(base64)){
+				String ret=base64.substring(BASE64_IMAGE_HEADER.length());
+				
+				return ret;
+			} else {
+				return base64;
+			}
+		}
+	}
+		
+	public static boolean importBase64Image(File file,String base64) throws IOException{
+		String b=getBase64String(base64);
+		
+		if (b == null) {
+			return false;
+		} else {
+            byte bytes[]=Base64.decodeBase64(b);
+            
+			FileOutputStream output = new FileOutputStream(file);
+			try {
+				IOUtils.write(bytes, output);
+			}finally{
+				IOUtils.closeQuietly(output);
+			}
+			
+			return true;
 		}
 	}
 }
