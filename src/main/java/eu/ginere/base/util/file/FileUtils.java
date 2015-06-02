@@ -121,12 +121,67 @@ public class FileUtils {
 			}
 		}
 	}
+
+	public static class FileDateComararator implements Comparator<File>{
+		public static final FileDateComararator COMPARATOR_ASC=new FileDateComararator(true);
+		public static final FileDateComararator COMPARATOR_DESC=new FileDateComararator(false);
+		
+		private final boolean asc;
+		private FileDateComararator(boolean asc){
+			this.asc=asc;
+		}
+
+		@Override
+		public int compare(File f1, File f2) {
+			if (f1==null){
+				if (f2 == null){
+					return 0;
+				} else {
+					return (asc)?-1:1;
+//					if (asc) {
+//						return -1;
+//					} else {
+//						return 1;
+//					}
+				
+				}
+			} else if (f2 == null){
+				return (asc)?1:-1;
+//				return 1;
+			} else {
+				if (f1.lastModified() == f2.lastModified()){
+					return 0;
+				} else if (f1.lastModified() > f2.lastModified()){
+					return (asc)?1:-1;
+//					return 1;
+				} else {
+					return (asc)?-1:1;
+//					return -1;
+				}
+			}
+		}
+	}
+
 	
 	public static void sortByName(File array[]){
 		if (array == null || array.length==0){
 			return ;
 		} else {
 			Arrays.sort(array, FileNameComararator.COMPARATOR);
+			
+			return;
+		}
+	}
+
+	public static void sortDate(File array[],boolean asc){
+		if (array == null || array.length==0){
+			return ;
+		} else {
+			if (asc) {
+				Arrays.sort(array, FileDateComararator.COMPARATOR_ASC);
+			} else {
+				Arrays.sort(array, FileDateComararator.COMPARATOR_DESC);
+			}
 			
 			return;
 		}
@@ -1438,4 +1493,29 @@ public class FileUtils {
 			return true;
 		}
 	}
+	
+
+	public static boolean hasExtension(File file,String extension) {
+		if (extension==null){
+			log.warn("Null extension for file:"+file.getAbsolutePath());
+			return false;
+		} else {
+			return file.getName().toLowerCase().endsWith(extension.toLowerCase());
+		}
+	}
+	
+	public static long getFileNumber(File file){
+		if (file == null){
+			return 0;
+		} else {
+			File array[]=file.listFiles();
+			
+			if (array==null){
+				return 0;
+			} else {
+				return array.length;
+			}
+		}
+	}
+
 }
