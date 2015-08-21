@@ -51,7 +51,9 @@ final public class TestResult {
 		this.isError=true;		
 	}
 	public void add(TestResult test) {
-		this.isError=test.isError;
+		if (test.isError == true){
+			this.isError=test.isError;
+		}
 		this.childs.add(test);
 	}
 	

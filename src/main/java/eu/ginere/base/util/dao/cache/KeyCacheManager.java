@@ -1,12 +1,12 @@
 package eu.ginere.base.util.dao.cache;
 
-import eu.ginere.base.util.dao.cache.impl.AbstractKeyCacheManager;
-import eu.ginere.base.util.properties.GlobalFileProperties;
-import eu.ginere.base.util.thread.AbstractPeriodicThread;
-
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
+
+import eu.ginere.base.util.dao.cache.impl.AbstractKeyCacheManager;
+import eu.ginere.base.util.properties.GlobalFileProperties;
+import eu.ginere.base.util.thread.AbstractPeriodicThread;
 
 public class KeyCacheManager extends AbstractPeriodicThread {
 
@@ -17,7 +17,7 @@ public class KeyCacheManager extends AbstractPeriodicThread {
 
 	public static final KeyCacheManager MANAGER=new KeyCacheManager();
 	
-	public final Vector<AbstractKeyCacheManager> list = new Vector<AbstractKeyCacheManager>();
+	public final Vector<AbstractKeyCacheManager<?>> list = new Vector<AbstractKeyCacheManager<?>>();
 	
 
 	public static final long DEFAULT_TIME_TO_SLEEP = 30*1000;
@@ -32,7 +32,7 @@ public class KeyCacheManager extends AbstractPeriodicThread {
 		
 	}
 
-	public void subscrive(AbstractKeyCacheManager abstractKeyManager) {
+	public void subscrive(AbstractKeyCacheManager<?> abstractKeyManager) {
 		list.add(abstractKeyManager);
 		
 		if (!super.isProcessing()){
@@ -44,7 +44,7 @@ public class KeyCacheManager extends AbstractPeriodicThread {
 	protected void executeTask() {
 //		long time=System.currentTimeMillis()-objectMaxUnactiveTime;
 
-		for (AbstractKeyCacheManager manager:list){
+		for (AbstractKeyCacheManager<?> manager:list){
 			manager.purge(objectMaxUnactiveTime);
 		}
 	}

@@ -82,11 +82,11 @@ public class FileProperties {
 		getFileProperties(filePath);
 	}
 
-	public String getStringValue(Class c, String propertyName) {
+	public String getStringValue(Class<?> c, String propertyName) {
 		return getValue(c, propertyName);
 	}
 
-	public String getStringValue(Class c, String propertyName,
+	public String getStringValue(Class<?> c, String propertyName,
 			String defaultValue) {
 		try {
 			String ret = getStringValue(c, propertyName);
@@ -104,7 +104,7 @@ public class FileProperties {
 		}
 	}
 
-	public String[] getPropertyList(Class c, String propertyName) {
+	public String[] getPropertyList(Class<?> c, String propertyName) {
 		try {
 			String value = getStringValue(c, propertyName);
 			String ret[] = StringUtils.split(value, ",");
@@ -120,7 +120,7 @@ public class FileProperties {
 		}
 	}
 
-	public HashSet<String> getPropertyMap(Class c, String propertyName) {
+	public HashSet<String> getPropertyMap(Class<?> c, String propertyName) {
 		String array[]=getPropertyList(c, propertyName);
 		
 		HashSet<String> ret=new HashSet<String>(array.length);
@@ -131,7 +131,7 @@ public class FileProperties {
 	}
 	
 	
-	public int getIntValue(Class c, String propertyName, int defaultValue) {
+	public int getIntValue(Class<?> c, String propertyName, int defaultValue) {
 		try {
 			String ret = getStringValue(c, propertyName);
 
@@ -153,7 +153,7 @@ public class FileProperties {
 
 	
 	
-	public long getLongValue(Class c, String propertyName, long defaultValue) {
+	public long getLongValue(Class<?> c, String propertyName, long defaultValue) {
 		try {
 			String ret = getStringValue(c, propertyName);
 
@@ -175,7 +175,7 @@ public class FileProperties {
 	
 	
 	
-	public double getDoubleValue(Class c, String propertyName, double defaultValue) {
+	public double getDoubleValue(Class<?> c, String propertyName, double defaultValue) {
 		try {
 			String ret = getStringValue(c, propertyName);
 
@@ -194,7 +194,7 @@ public class FileProperties {
 			return defaultValue;
 		}
 	}
-	public boolean getBooleanValue(Class section, String propertyName,
+	public boolean getBooleanValue(Class<?> section, String propertyName,
 			boolean defaultValue) {
 		try {
 			String ret = getStringValue(section, propertyName);
@@ -224,7 +224,7 @@ public class FileProperties {
 	 * mother class La propiededd tien eque ser de la fdorma siguiente
 	 * es.nombre.Clase.nombrePropiedad
 	 */
-	private String getValue(Class section, String name) {
+	private String getValue(Class<?> section, String name) {
 
 		if (section == null || name == null) {
 			log.warn("Section or name is null, Section:'" + section
@@ -289,22 +289,22 @@ public class FileProperties {
 		return null;
 	}
 
-	private String getProperty(Properties fileProperties, String propertyName) {
-		Object obj = fileProperties.get(propertyName);
-		if (obj != null) {
-			if (log.isDebugEnabled()){
-				log.debug("getting propertyName:'" + propertyName + "' from cache");
-			}
-			if (ObjectUtils.NULL.equals(obj)) {
-				return null;
-			} else {
-				return (String) obj;
-			}
-		} else {
-			fileProperties.put(propertyName, ObjectUtils.NULL);
-			return null;
-		}
-	}
+//	private String getProperty(Properties fileProperties, String propertyName) {
+//		Object obj = fileProperties.get(propertyName);
+//		if (obj != null) {
+//			if (log.isDebugEnabled()){
+//				log.debug("getting propertyName:'" + propertyName + "' from cache");
+//			}
+//			if (ObjectUtils.NULL.equals(obj)) {
+//				return null;
+//			} else {
+//				return (String) obj;
+//			}
+//		} else {
+//			fileProperties.put(propertyName, ObjectUtils.NULL);
+//			return null;
+//		}
+//	}
 
 	/**
 	 * true: "true".</br> false: "false".</br>
@@ -331,7 +331,7 @@ public class FileProperties {
 		return section + "." + propertieName;
 	}
 
-	private String getPropertyName(Class c, String propertieName) {
+	private String getPropertyName(Class<?> c, String propertieName) {
 		return getPropertyName(c.getName(), propertieName);
 	}
 

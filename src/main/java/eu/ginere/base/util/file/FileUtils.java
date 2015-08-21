@@ -981,6 +981,26 @@ public class FileUtils {
 	}
 
 	/**
+	 * Returns the child files if any, otherwise return new File[0]
+	 * @param file
+	 * @return
+	 */
+	public static File [] listFiles(File file) {
+		if (file==null){
+			return EMPTY_FILE_LIST;
+		} 
+		
+		File ret[]=file.listFiles(FILE_FILTER);
+		
+		if (ret==null){
+			return EMPTY_FILE_LIST;
+		} else {
+			return ret;
+		}		
+	}
+
+
+	/**
 	 * Iterate on all the files/dir of a folder no mather the type and the read state.
 	 * 
 	 * @param parentDir the parent folder where the chils to iterate on are.

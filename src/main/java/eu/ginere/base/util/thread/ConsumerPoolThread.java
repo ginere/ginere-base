@@ -151,6 +151,10 @@ public class ConsumerPoolThread<E> {
 		InnerConsumerThread(ConsumerPoolThread<E>pool,String name,int number){
 			super(name+"-"+number);
 			this.pool=pool;
+
+			setDaemon(true);
+			
+			// start the thread
 			start();
 		}
 
@@ -172,6 +176,10 @@ public class ConsumerPoolThread<E> {
 							stopedThreadNumber++;
 							objectList.wait();
 						}catch (InterruptedException e){
+							if (Thread.currentThread().isInterrupted()){
+								log.fatal("Thread has been interupted, exit thread right now !!!",e);
+								return ;
+							}
 						}finally{
 							stopedThreadNumber--;
 						}

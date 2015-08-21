@@ -4,6 +4,7 @@ import eu.ginere.base.util.dao.DaoManagerException;
 import eu.ginere.base.util.mail.MailManager;
 import eu.ginere.base.util.manager.AbstractManager;
 import eu.ginere.base.util.notification.MailNotificationImpl.NotificationEvent;
+import eu.ginere.base.util.properties.GlobalFileProperties;
 import eu.ginere.base.util.thread.ConsumerPoolThread;
 import eu.ginere.base.util.thread.ConsumerThreadInterface;
 
@@ -244,7 +245,8 @@ class MailNotificationImpl extends AbstractManager implements NotificationImplIn
 
 	public static boolean useEmailNotification() {
 		try {
-			return getFileProperties(PROPERTIES_FILE_NAME).getBooleanValue(MailNotificationImpl.class, "UseMailNotification",false);
+//			return getFileProperties(PROPERTIES_FILE_NAME).getBooleanValue(MailNotificationImpl.class, "UseMailNotification",false);
+			return GlobalFileProperties.getBooleanValue(MailNotificationImpl.class, "UseMailNotification",false);
 		}catch (Throwable e){
 			log.warn("Use email notification",e);
 			return false;

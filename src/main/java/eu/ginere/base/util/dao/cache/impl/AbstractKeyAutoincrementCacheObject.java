@@ -18,7 +18,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  */
 public abstract class AbstractKeyAutoincrementCacheObject implements KeyAutoincrementDTO,KeyCacheObject,Serializable {
 
-
+	private static final long serialVersionUID = 1L;
+	
 	@Description
 	protected String id;
 	protected long update;

@@ -34,7 +34,7 @@ public class FileConnector {
 			return ;
 		}
 		
-		Class clazz=Class.forName(className);
+		Class<?> clazz=Class.forName(className);
 		connector=(FileConnectorInterface)clazz.newInstance();
 
 		if (log.isInfoEnabled()){
