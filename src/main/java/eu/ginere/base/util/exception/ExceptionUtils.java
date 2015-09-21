@@ -1,9 +1,13 @@
 package eu.ginere.base.util.exception;
 
+import org.apache.log4j.Logger;
+
 /**
  * 
  */
 public class ExceptionUtils {
+
+	public static final Logger log = Logger.getLogger(ExceptionUtils.class);
 
 	/**
 	 * Formatea una excepcion y las excepciones padre.
@@ -82,5 +86,20 @@ public class ExceptionUtils {
 			buffer.append(element.getLineNumber());
 		}
 		buffer.append(')');
+	}
+
+
+	public static String getMessage(Throwable exception) {
+		if (exception==null){
+			log.error("Exception passed is null.");
+			return "--null--";
+		} else {
+			String message=exception.getMessage();
+			if (message==null){
+				message=exception.getClass().getName();
+			}
+			
+			return message;
+		}
 	}
 }

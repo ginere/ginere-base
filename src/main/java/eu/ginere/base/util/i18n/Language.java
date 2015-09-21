@@ -156,7 +156,9 @@ public class Language implements Serializable{
 	}
 
 	public static boolean equals(Language l1, Language l2) {
-		if (l1==null){
+		if (l1==l2){
+			return true;
+		} else if (l1==null){
 			if (l2==null){
 				return true;
 			} else {
