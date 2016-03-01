@@ -23,6 +23,9 @@ public class GlobalFileProperties {
 	static Logger log = Logger.getLogger(GlobalFileProperties.class);
 	static private FileProperties staticFileProperties = null;
 
+	
+	private static final String ERROR_MISSING_RESOURCE="The default file is not specified, use the setInitFilePath.";
+
 	/**
 	 * Returns the current FileProperties used by the GlobalFileProperties. If no defined returns null.
 	 * @return
@@ -86,7 +89,7 @@ public class GlobalFileProperties {
 
 	static public String getStringValue(Class<?> c, String propertyName) {
 		if (staticFileProperties==null){
-			throw new MissingResourceException("No se ha especifiacdo el fichero por defecto use setInitFilePath",c.toString(),propertyName);
+			throw new MissingResourceException(ERROR_MISSING_RESOURCE,c.toString(),propertyName);
 		} else {
 			return staticFileProperties.getStringValue(c,propertyName);
 		}
@@ -95,7 +98,7 @@ public class GlobalFileProperties {
 	static public String getStringValue(Class<?> c, String propertyName,
 										String defaultValue) {
 		if (staticFileProperties==null){
-			log.warn("No se ha especifiacdo el fichero por defecto use setInitFilePath");
+			log.warn(ERROR_MISSING_RESOURCE);
 			return defaultValue;
 		} else {
 			return staticFileProperties.getStringValue(c,propertyName,defaultValue);
@@ -104,7 +107,7 @@ public class GlobalFileProperties {
 
 	static public String[] getPropertyList(Class<?> c, String propertyName) {
 		if (staticFileProperties==null){
-			throw new MissingResourceException("No se ha especifiacdo el fichero por defecto use setInitFilePath",c.toString(),propertyName);
+			throw new MissingResourceException(ERROR_MISSING_RESOURCE,c.toString(),propertyName);
 		} else {
 			return staticFileProperties.getPropertyList(c,propertyName);
 		}
@@ -114,7 +117,7 @@ public class GlobalFileProperties {
 								  String propertyName, 
 								  int defaultValue) {
 		if (staticFileProperties==null){
-			log.warn("No se ha especifiacdo el fichero por defecto use setInitFilePath");
+			log.warn(ERROR_MISSING_RESOURCE);
 			return defaultValue;
 		} else {
 			return staticFileProperties.getIntValue(c,propertyName,defaultValue);
@@ -125,7 +128,7 @@ public class GlobalFileProperties {
 	static public double getDoubleValue(Class<?> c, String propertyName,
 			double defaultValue) {
 		if (staticFileProperties == null) {
-			log.warn("No se ha especifiacdo el fichero por defecto use setInitFilePath");
+			log.warn(ERROR_MISSING_RESOURCE);
 			return defaultValue;
 		} else {
 			return staticFileProperties.getDoubleValue(c, propertyName,
@@ -135,7 +138,7 @@ public class GlobalFileProperties {
 	
 	static public long getLongValue(Class<?> c, String propertyName, long defaultValue) {
 		if (staticFileProperties == null) {
-			log.warn("No se ha especifiacdo el fichero por defecto use setInitFilePath");
+			log.warn(ERROR_MISSING_RESOURCE);
 			return defaultValue;
 		} else {
 			return staticFileProperties.getLongValue(c, propertyName,
@@ -147,7 +150,7 @@ public class GlobalFileProperties {
 										  String propertyName,
 										  boolean defaultValue) {
 		if (staticFileProperties==null){
-			log.warn("No se ha especifiacdo el fichero por defecto use setInitFilePath");
+			log.warn(ERROR_MISSING_RESOURCE);
 			return defaultValue;
 		} else {
 			return staticFileProperties.getBooleanValue(c,propertyName,defaultValue);
@@ -156,8 +159,8 @@ public class GlobalFileProperties {
 
 	static public HashSet<String> getPropertyMap(Class<?> c, String propertyName) {
 		if (staticFileProperties==null){
-			log.warn("No se ha especifiacdo el fichero por defecto use setInitFilePath");
-			throw new MissingResourceException("No se ha especifiacdo el fichero por defecto use setInitFilePath",c.toString(),propertyName);
+			log.warn(ERROR_MISSING_RESOURCE);
+			throw new MissingResourceException(ERROR_MISSING_RESOURCE,c.toString(),propertyName);
 		} else {
 			return staticFileProperties.getPropertyMap(c,propertyName);
 		}
@@ -165,7 +168,7 @@ public class GlobalFileProperties {
 	
 	public static void subscriveToPropertiesChanged(PropertiesChangedLister listener){
 		if (staticFileProperties==null){
-			throw new MissingResourceException("No se ha especifiacdo el fichero por defecto use setInitFilePath",GlobalFileProperties.class.getName(),"subscriveToPropertiesChanged");
+			throw new MissingResourceException(ERROR_MISSING_RESOURCE,GlobalFileProperties.class.getName(),"subscriveToPropertiesChanged");
 		} else {
 			staticFileProperties.subscriveToPropertiesChanged(listener);
 		}
@@ -173,7 +176,7 @@ public class GlobalFileProperties {
 	
 	public static void removePropertiesChangedListener(PropertiesChangedLister listener){
 		if (staticFileProperties==null){
-			throw new MissingResourceException("No se ha especifiacdo el fichero por defecto use setInitFilePath",GlobalFileProperties.class.getName(),"removePropertiesChangedListener");
+			throw new MissingResourceException(ERROR_MISSING_RESOURCE,GlobalFileProperties.class.getName(),"removePropertiesChangedListener");
 		} else {
 			staticFileProperties.removePropertiesChangedListener(listener);
 		}
@@ -181,7 +184,7 @@ public class GlobalFileProperties {
 
 	public static File getFildes(){
 		if (staticFileProperties==null){
-			throw new MissingResourceException("No se ha especifiacdo el fichero por defecto use setInitFilePath",GlobalFileProperties.class.getName(),"removePropertiesChangedListener");
+			throw new MissingResourceException(ERROR_MISSING_RESOURCE,GlobalFileProperties.class.getName(),"removePropertiesChangedListener");
 		} else {
 			return staticFileProperties.getFildes();
 		}
@@ -189,7 +192,7 @@ public class GlobalFileProperties {
 
 	public static long getLastModified(){
 		if (staticFileProperties==null){
-			throw new MissingResourceException("No se ha especifiacdo el fichero por defecto use setInitFilePath",GlobalFileProperties.class.getName(),"removePropertiesChangedListener");
+			throw new MissingResourceException(ERROR_MISSING_RESOURCE,GlobalFileProperties.class.getName(),"removePropertiesChangedListener");
 		} else {
 			return staticFileProperties.getLastModified();
 		}
@@ -197,7 +200,7 @@ public class GlobalFileProperties {
 
 	public String getFilePath(){
 		if (staticFileProperties==null){
-			throw new MissingResourceException("No se ha especifiacdo el fichero por defecto use setInitFilePath",GlobalFileProperties.class.getName(),"removePropertiesChangedListener");
+			throw new MissingResourceException(ERROR_MISSING_RESOURCE,GlobalFileProperties.class.getName(),"removePropertiesChangedListener");
 		} else {
 			return staticFileProperties.getFilePath();
 		}
