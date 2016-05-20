@@ -20,5 +20,34 @@ public interface ConsumerThreadInterface<E>{
 	 * information must be thread safe
 	 */
 	public void consume(ConsumerPoolThread<E>pool,E object);
+
+
+	/**
+	 * For THREADLOCAL VARIABLES UPDATE.
+	 * 
+	 * This is call for each thread when the work is donne.
+	 * use Thread.currentThread() to get the current thread.
+	 * 
+	 */
+	public void threadWorkDone();
+
+
+	/**
+	 * For THREADLOCAL VARIABLES UPDATE.
+	 * 
+	 * This is call for each thread when the thread ends the run function.
+	 * 
+	 */
+	public void threadStopped();
+
+
+	/**
+	 * For THREADLOCAL VARIABLES UPDATE.
+	 * 
+	 * This is call for each thread at the very begininng of the run function
+	 * 
+	 */
+	public void threadStarted();
+	
 }
 

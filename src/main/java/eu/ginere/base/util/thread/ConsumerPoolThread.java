@@ -159,59 +159,74 @@ public class ConsumerPoolThread<E> {
 		}
 
 		public void run(){
-			while(!stopped){
-
-				// Wait untill the list will have some elements
-				synchronized (objectList) {
-					if (objectList.isEmpty()){
-
-//							if (log.isDebugEnabled()){
-//								log.debug("Sleeping "+Thread.currentThread().getName()+" ... ");
-//							}
-
-							synchronized (threadList) {
-								threadList.notifyAll();
-							}
-						try {
-							stopedThreadNumber++;
-							objectList.wait();
-						}catch (InterruptedException e){
-							if (Thread.currentThread().isInterrupted()){
-								log.fatal("Thread has been interupted, exit thread right now !!!",e);
-								return ;
-							}
-						}finally{
-							stopedThreadNumber--;
-						}
-//						log.debug("AWAKE "+Thread.currentThread().getName()+" ... ");
-					} 
-				}
-				
-				// gwtting the next element to treat
-				while (!objectList.isEmpty() && !stopped ){
-					try {
-						E object=null;
-						synchronized (objectList) {
-							if (!objectList.isEmpty()){
-								object=objectList.remove(0);
-							}
-						}
-						if (object!=null){
-//							if (log.isDebugEnabled()){
-//								log.debug("REMOVED, size:'"+objectListSize()+"'  "+object.hashCode()+" "+object.toString());
-//							}
-							try {
-								consumer.consume(pool,object);
-							}catch(Exception e){
-								log.error("While consumming object!",e);
-							}
-						}
-					}catch(ArrayIndexOutOfBoundsException e){ // may bethe element has been taken by another thread
-//						log.info("While consumming object!",e);
-					}
-				}								
+			
+			try {
+				consumer.threadStarted();
+			}catch(Throwable e){
+				log.error("Error in threadStarted for thread:"+getName(),e);
 			}
-//			log.info("Consumer stopped:"+getName());
+			try {
+				while(!stopped){
+	
+					// Wait untill the list will have some elements
+					synchronized (objectList) {
+						if (objectList.isEmpty()){
+	
+	//							if (log.isDebugEnabled()){
+	//								log.debug("Sleeping "+Thread.currentThread().getName()+" ... ");
+	//							}
+	
+								synchronized (threadList) {
+									threadList.notifyAll();
+								}
+							try {
+								stopedThreadNumber++;
+								objectList.wait();
+							}catch (InterruptedException e){
+								if (Thread.currentThread().isInterrupted()){
+									log.fatal("Thread has been interupted, exit thread right now !!!",e);
+									return ;
+								}
+							}finally{
+								stopedThreadNumber--;
+							}
+	//						log.debug("AWAKE "+Thread.currentThread().getName()+" ... ");
+						} 
+					}
+					
+					// getting the next element to treat
+					while (!objectList.isEmpty() && !stopped ){
+						try {
+							E object=null;
+							synchronized (objectList) {
+								if (!objectList.isEmpty()){
+									object=objectList.remove(0);
+								}
+							}
+							if (object!=null){
+	//							if (log.isDebugEnabled()){
+	//								log.debug("REMOVED, size:'"+objectListSize()+"'  "+object.hashCode()+" "+object.toString());
+	//							}
+								try {
+									consumer.consume(pool,object);
+								}catch(Exception e){
+									log.error("While consumming object!",e);
+								}
+							}
+						}catch(ArrayIndexOutOfBoundsException e){ // may bethe element has been taken by another thread
+	//						log.info("While consumming object!",e);
+						}
+					}								
+				}
+	//			log.info("Consumer stopped:"+getName());
+			} finally {
+				try {
+					consumer.threadStopped();
+				}catch(Throwable e){
+					log.error("Error in threadStopped for thread:"+getName(),e);
+				}
+			}
+			
 		}
 
 	}
@@ -233,10 +248,17 @@ public class ConsumerPoolThread<E> {
 			} catch (InterruptedException e) {
 			}
 		}
-		
+
+		for (InnerConsumerThread thread:threadList) {
+			try {
+				consumer.threadWorkDone();
+			}catch(Throwable e){
+				log.error("Error in threadWorkDone for thread:"+thread.getName(),e);
+			}
+		}
+
 		if (log.isInfoEnabled()){
 			log.info("Work, done. List Size:"+objectListSize()+" running threads:"+getRunningThreadNumber()+"/"+getThreadPoolSize());
-		}
-		
+		}		
 	}
 }

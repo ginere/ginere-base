@@ -4,14 +4,18 @@ import java.io.File;
 import java.util.ServiceConfigurationError;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
+
 
 import eu.ginere.base.util.file.FileUtils;
+import eu.ginere.base.util.log.Logger;
+import eu.ginere.base.util.log.LoggerInterface;
 import eu.ginere.base.util.properties.FileProperties;
 import eu.ginere.base.util.properties.GlobalFileProperties;
+import eu.ginere.base.util.test.TestInterface;
 
 // TODO implements implements TestInterface
-public abstract class AbstractManager {
+public abstract class AbstractManager implements TestInterface{
 	static protected final Logger log = Logger.getLogger(AbstractManager.class);
 	
 	private static String propertiesPath=null;
@@ -22,6 +26,14 @@ public abstract class AbstractManager {
 		propertiesPath=path;
 	}
 	
+	public static final void setThreadLocalLogger(LoggerInterface logger){
+		log.setThreadLocal(logger);
+	}
+
+	public static final void removeThreadLocalLogger(){
+		log.removeThreadLocal();
+	}
+
 	protected static final FileProperties getFileProperties(String fileName) {
 		String abstolutePath=getAbsoluteFilePropertiesPath(fileName);
 

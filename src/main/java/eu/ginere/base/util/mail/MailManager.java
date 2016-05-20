@@ -1,9 +1,5 @@
 package eu.ginere.base.util.mail;
 
-import eu.ginere.base.util.dao.DaoManagerException;
-import eu.ginere.base.util.manager.AbstractManager;
-import eu.ginere.base.util.properties.FileProperties;
-
 import java.util.Properties;
 
 import javax.mail.Address;
@@ -16,7 +12,16 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.log4j.Logger;
 
+import eu.ginere.base.util.dao.DaoManagerException;
+import eu.ginere.base.util.manager.AbstractManager;
+import eu.ginere.base.util.properties.FileProperties;
+import eu.ginere.base.util.test.TestResult;
 
+
+/**
+ * @author ventura
+ * ToDO use the singleton aproach
+ */
 public class MailManager extends AbstractManager {
 	static Logger log = Logger.getLogger(MailManager.class);
 	   
@@ -107,5 +112,19 @@ public class MailManager extends AbstractManager {
 		}catch (Exception e) {
 			throw new DaoManagerException("To:"+to+"' Subject:'"+subject+ "' Body:'"+body+"'",e);
 		}
+	}
+
+	@Override
+	public TestResult test() {
+		return MailManager.staticTest();
+	}
+	
+	static public TestResult staticTest() {
+		TestResult ret=new TestResult(MailManager.class);
+
+		// TODO NOT IMPLEMENTED
+//		ret.add(MailManager.test());
+		
+		return ret;
 	}
 }	   

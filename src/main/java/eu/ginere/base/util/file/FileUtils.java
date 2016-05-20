@@ -10,6 +10,12 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
+//import java.nio.file.FileVisitOption;
+//import java.nio.file.FileVisitResult;
+//import java.nio.file.FileVisitor;
+//import java.nio.file.Files;
+//import java.nio.file.Path;
+//import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
@@ -23,7 +29,7 @@ public class FileUtils {
 
 	private static final File EMPTY_FILE_LIST[]=new File[0];
 	
-	private static final DirFileFilterInner DIR_FILTER=new DirFileFilterInner();
+	public static final DirFileFilterInner DIR_FILTER=new DirFileFilterInner();
 	
 	private static final FileFilterInner FILE_FILTER=new FileFilterInner();
 	
@@ -1089,6 +1095,175 @@ public class FileUtils {
 		}		
 		
 	}
+
+	
+//	/**
+//	 * @author ventura
+//	 * This terate on directories
+//	 */
+//	private static class DirectoryWalker implements FileVisitor<Path>{
+//
+//		static DirectoryWalker SINGLE_THREAD_DIRECTORY_WALKER=new DirectoryWalker();
+//
+//		ThreadLocal<FileIterator> threadLocalFileIterator=new ThreadLocal<FileIterator>();
+//		ThreadLocal<Boolean> threadLocalResult=new ThreadLocal<Boolean>();
+//
+//		public boolean getResult() {
+//			Boolean ret=threadLocalResult.get();
+//			
+//			if (ret == null){
+//				return true;
+//			} else {
+//				return ret;
+//			}
+//		}
+//
+//		private void init(FileIterator iteratorr) {
+//			threadLocalFileIterator.set(iteratorr);			
+//		}
+//
+//		private DirectoryWalker(){
+//		}
+//		
+//		@Override
+//		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)throws IOException {
+//			if (Files.isDirectory(file)){
+////				if (log.isDebugEnabled()){
+////					log.debug("VISITING DIR:"+file);
+////				}
+//				FileIterator iterator=threadLocalFileIterator.get();				
+//				boolean ret=iterator.iterate(file.toFile());
+//				if (!ret){
+//					return FileVisitResult.TERMINATE;
+//				} else {
+//					return FileVisitResult.CONTINUE;					
+//				}
+//			} else {
+////				if (log.isDebugEnabled()){
+////					log.debug("Avoiding file:"+file);
+////				}
+//				return FileVisitResult.CONTINUE;					
+//			}
+//		}
+//
+//		@Override
+//		public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+//			log.error("visitFileFailed:"+file,exc);
+//			return FileVisitResult.CONTINUE;
+//		}
+//
+//		@Override
+//		public FileVisitResult preVisitDirectory(Path dir,
+//												 BasicFileAttributes attrs) throws IOException {
+////			if (log.isDebugEnabled()){
+////				log.debug("preVisitDirectory dir:"+dir);
+////			}
+//
+//			return FileVisitResult.CONTINUE;
+//		}
+//		@Override
+//		public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+////			if (log.isDebugEnabled()){
+////				log.debug("postVisitDirectory dir:"+dir);
+////			}
+//			return FileVisitResult.CONTINUE;
+//		}
+//
+//	}
+//
+//	/**
+//	 * @author ventura
+//	 * This terate on directories
+//	 */
+//	 public static abstract class DirectoryWalker2 implements FileVisitor<Path>,FileIterator{
+//
+//		boolean result=true;
+//		
+//		public boolean getResult() {
+//			return result;
+//		}
+//
+//		protected DirectoryWalker2(){
+//		}
+//		
+//		@Override
+//		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)throws IOException {
+//			if (Files.isDirectory(file)){
+////				if (log.isDebugEnabled()){
+////					log.debug("VISITING DIR:"+file);
+////				}
+//				result=iterate(file.toFile());
+//				if (!result){
+//					return FileVisitResult.TERMINATE;
+//				} else {
+//					return FileVisitResult.CONTINUE;					
+//				}
+//			} else {
+////				if (log.isDebugEnabled()){
+////					log.debug("Avoiding file:"+file);
+////				}
+//				return FileVisitResult.CONTINUE;					
+//			}
+//		}
+//
+//		@Override
+//		public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+//			log.error("visitFileFailed:"+file,exc);
+//			return FileVisitResult.CONTINUE;
+//		}
+//
+//		@Override
+//		public FileVisitResult preVisitDirectory(Path dir,
+//												 BasicFileAttributes attrs) throws IOException {
+////			if (log.isDebugEnabled()){
+////				log.debug("preVisitDirectory dir:"+dir);
+////			}
+////
+//			return FileVisitResult.CONTINUE;
+//		}
+//
+//		
+//		@Override
+//		public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+////			if (log.isDebugEnabled()){
+////				log.debug("postVisitDirectory dir:"+dir);
+////			}
+//			return FileVisitResult.CONTINUE;
+//		}
+//
+//	}
+//	
+//	public static boolean iterateOnChildDirs2(File parentDir,FileIterator iterator) {		
+////		FileVisitor<File> visitor=DirectoryWalker.DIRECTORY_WALKER;
+//		Set<FileVisitOption> options=EnumSet.of(FileVisitOption.FOLLOW_LINKS);
+//		Path start=parentDir.toPath();
+//		
+//		DirectoryWalker.SINGLE_THREAD_DIRECTORY_WALKER.init(iterator);
+//
+//		try {
+//			Files.walkFileTree(start, options, 1, DirectoryWalker.SINGLE_THREAD_DIRECTORY_WALKER);
+//			return DirectoryWalker.SINGLE_THREAD_DIRECTORY_WALKER.getResult();
+//		} catch (IOException e) {
+//			log.error("Dir:"+parentDir.getAbsolutePath(),e);
+//			return true;
+//		}
+//		
+//	}
+//	
+//	public static boolean iterateOnChildDirs3(File parentDir,DirectoryWalker2 iterator) {		
+////		FileVisitor<File> visitor=DirectoryWalker.DIRECTORY_WALKER;
+//		Set<FileVisitOption> options=EnumSet.of(FileVisitOption.FOLLOW_LINKS);
+//		Path start=parentDir.toPath();
+//		
+//		try {
+//			Files.walkFileTree(start, options, 1, iterator);
+//			return iterator.getResult();
+//		} catch (IOException e) {
+//			log.error("Dir:"+parentDir.getAbsolutePath(),e);
+//			return true;
+//		}
+//		
+//	}
 
 	/**
 	 * Iterate only on the childs of the parent folder

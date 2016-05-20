@@ -1,18 +1,19 @@
 package eu.ginere.base.util.notification;
 
-import eu.ginere.base.util.dao.DaoManagerException;
-import eu.ginere.base.util.mail.MailManager;
-import eu.ginere.base.util.manager.AbstractManager;
-import eu.ginere.base.util.notification.MailNotificationImpl.NotificationEvent;
-import eu.ginere.base.util.properties.GlobalFileProperties;
-import eu.ginere.base.util.thread.ConsumerPoolThread;
-import eu.ginere.base.util.thread.ConsumerThreadInterface;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.exception.ExceptionUtils;
+
+import eu.ginere.base.util.dao.DaoManagerException;
+import eu.ginere.base.util.mail.MailManager;
+import eu.ginere.base.util.manager.AbstractManager;
+import eu.ginere.base.util.notification.MailNotificationImpl.NotificationEvent;
+import eu.ginere.base.util.properties.GlobalFileProperties;
+import eu.ginere.base.util.test.TestResult;
+import eu.ginere.base.util.thread.ConsumerPoolThread;
+import eu.ginere.base.util.thread.ConsumerThreadInterface;
 
 
 
@@ -252,6 +253,30 @@ class MailNotificationImpl extends AbstractManager implements NotificationImplIn
 			return false;
 		}
 		
+	}
+
+	@Override
+	public void threadWorkDone() {
+		// nothing to do
+	}
+
+	@Override
+	public void threadStopped() {
+		// nothing to do
+	}
+
+	@Override
+	public void threadStarted() {
+		// nothing to do
+	}
+
+	@Override
+	public TestResult test() {
+		TestResult ret=new TestResult(this.getClass());
+
+		ret.add(MailManager.staticTest());
+		
+		return ret;
 	}
 	
 }
