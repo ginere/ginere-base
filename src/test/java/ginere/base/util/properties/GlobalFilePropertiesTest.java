@@ -1,6 +1,9 @@
 package ginere.base.util.properties;
 
+import java.util.Collection;
+
 import eu.ginere.base.util.properties.GlobalFileProperties;
+import eu.ginere.base.util.properties.PropertyDescriptor;
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
@@ -21,7 +24,15 @@ public class GlobalFilePropertiesTest extends TestCase{
 			log.info("Cargando el fichero de propiedades:'"+FILE_PROPERTY_PATH+"'");
 			GlobalFileProperties.setInitFilePath(FILE_PROPERTY_PATH);
 
-			int value=GlobalFileProperties.getIntValue(GlobalFilePropertiesTest.class, "intTest", -1);
+			Collection<PropertyDescriptor> list=GlobalFileProperties.getDescriptors();
+			
+			for (PropertyDescriptor desc:list){
+				log.info("Dec:"+desc);
+			}
+			
+			int value=GlobalFileProperties.getIntValue(GlobalFilePropertiesTest.class, "intTest","test property", -1);
+
+			GlobalFileProperties.getDescriptors();
 			
 			TestCase.assertNotSame(value, -1);
 			

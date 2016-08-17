@@ -9,6 +9,8 @@ package eu.ginere.base.util.thread;
 import java.util.HashMap;
 import java.util.Vector;
 
+//import eu.ginere.base.util.log.Logger;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -73,6 +75,7 @@ public class ConsumerPoolThread<E> {
 
 	/**
 	 * add a new object into the consumer list to be consumed!
+	 * Warning this wait the current thread to wait for an thread to handle this object
 	 */ 
 	public void addObject(E object){
 		if(stopped==true){
@@ -85,7 +88,10 @@ public class ConsumerPoolThread<E> {
 //		if (log.isDebugEnabled()){
 //			log.debug("ADD, size:'"+objectListSize()+"' "+object.hashCode()+" stopped:"+stopedThreadNumber+" "+object.toString());
 //		}
-		if (stopedThreadNumber==0 && !threadMap.containsKey(Thread.currentThread().getName())){
+
+		// Waits for an stoped worked before returning !!!!
+		// except if this thread is a thread of the pool 
+		if (!objectList.isEmpty() && stopedThreadNumber==0 && !threadMap.containsKey(Thread.currentThread().getName())){
 			synchronized (threadList) {
 				try {
 					threadList.wait();
@@ -148,6 +154,9 @@ public class ConsumerPoolThread<E> {
 
 	private class InnerConsumerThread extends Thread {
 		private final ConsumerPoolThread<E>pool;
+		
+		private boolean workDone=false;
+		
 		InnerConsumerThread(ConsumerPoolThread<E>pool,String name,int number){
 			super(name+"-"+number);
 			this.pool=pool;
@@ -156,6 +165,10 @@ public class ConsumerPoolThread<E> {
 			
 			// start the thread
 			start();
+		}
+		
+		public void threadWorkDone(){
+			this.workDone=true;
 		}
 
 		public void run(){
@@ -171,14 +184,14 @@ public class ConsumerPoolThread<E> {
 					// Wait untill the list will have some elements
 					synchronized (objectList) {
 						if (objectList.isEmpty()){
-	
+							
 	//							if (log.isDebugEnabled()){
 	//								log.debug("Sleeping "+Thread.currentThread().getName()+" ... ");
 	//							}
 	
-								synchronized (threadList) {
-									threadList.notifyAll();
-								}
+							synchronized (threadList) {
+								threadList.notifyAll();
+							}
 							try {
 								stopedThreadNumber++;
 								objectList.wait();
@@ -192,6 +205,12 @@ public class ConsumerPoolThread<E> {
 							}
 	//						log.debug("AWAKE "+Thread.currentThread().getName()+" ... ");
 						} 
+					}
+					
+					// work done notification thread
+					if (workDone){
+						consumer.threadWorkDone();
+						workDone=false;
 					}
 					
 					// getting the next element to treat
@@ -244,21 +263,36 @@ public class ConsumerPoolThread<E> {
 				log.debug("List Size:"+objectListSize()+" running threads:"+getRunningThreadNumber()+"/"+getThreadPoolSize());
 			}
 			try {
+				log.info("STILL WAITING List Size:"+objectListSize()+" running threads:"+getRunningThreadNumber()+"/"+getThreadPoolSize());
+
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 			}
 		}
 
+		log.info(" Calling threadWorkDone.");
+
 		for (InnerConsumerThread thread:threadList) {
 			try {
-				consumer.threadWorkDone();
+				// update the work done flag and notify thre thread
+				thread.threadWorkDone();
+				synchronized (thread) {
+					thread.notify();
+				}
 			}catch(Throwable e){
 				log.error("Error in threadWorkDone for thread:"+thread.getName(),e);
 			}
 		}
+		
+		synchronized (objectList) {
+			objectList.notifyAll();		
+		}
 
 		if (log.isInfoEnabled()){
 			log.info("Work, done. List Size:"+objectListSize()+" running threads:"+getRunningThreadNumber()+"/"+getThreadPoolSize());
-		}		
+		}
+		
+		log.info("FINISH: Work, done. List Size:"+objectListSize()+" running threads:"+getRunningThreadNumber()+"/"+getThreadPoolSize());
+
 	}
 }

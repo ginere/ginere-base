@@ -23,7 +23,7 @@ public class TimeZoneUtils {
 
 	private static TimeZone getDefaultTimeZone() {
 		if (defaultTimeZone==null){
-			String id=GlobalFileProperties.getStringValue(TimeZoneUtils.class, "DefaultTimeZone");
+			String id=GlobalFileProperties.getStringValue(TimeZoneUtils.class, "DefaultTimeZone","The default time zone",null);
 			defaultTimeZone=TimeZone.getTimeZone(id);
 			
 			if (defaultTimeZone==null){

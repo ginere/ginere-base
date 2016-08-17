@@ -26,9 +26,9 @@ public class KeyCacheManager extends AbstractPeriodicThread {
 	private KeyCacheManager(){
 		super(DEFAULT_TIME_TO_SLEEP,KeyCacheManager.class.getName());
 		setDaemon(true);
-		setTimeToSleep(GlobalFileProperties.getLongValue(KeyCacheManager.class, "ThreadTimeToSleep", DEFAULT_TIME_TO_SLEEP));
+		setTimeToSleep(GlobalFileProperties.getLongValue(KeyCacheManager.class, "ThreadTimeToSleep", "KeyCacheManager ThreadTimeToSleep",DEFAULT_TIME_TO_SLEEP));
 		
-		objectMaxUnactiveTime=GlobalFileProperties.getLongValue(KeyCacheManager.class, "DefaultUnactiveTime", DEFAULT_UNACTIVE_TIME);
+		objectMaxUnactiveTime=GlobalFileProperties.getLongValue(KeyCacheManager.class, "DefaultUnactiveTime","KeyCacheManager DefaultUnactiveTime", DEFAULT_UNACTIVE_TIME);
 		
 	}
 

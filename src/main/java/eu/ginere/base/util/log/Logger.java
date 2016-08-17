@@ -3,6 +3,12 @@ package eu.ginere.base.util.log;
 import org.apache.log4j.Level;
 import org.apache.log4j.Priority;
 
+/**
+ * @author ventura
+ *
+ * This allow loggers for thread ... al the logs of a thread (process) will be stored in a logger.
+ * This alos have functionalities to inherit the logger from other processous,
+ */
 public class Logger implements LoggerInterface{
 
 	private static final String CANONICAL_NAME=Logger.class.getCanonicalName();
@@ -15,6 +21,7 @@ public class Logger implements LoggerInterface{
 	private ThreadLocal<LoggerInterface> tl=new ThreadLocal<LoggerInterface>();
 	private boolean threadLocal=false;
 	final LoggerInterface log;
+	LoggerInterface threadLocalLogger=null;
 	
 
 	private Logger(Class<?> clazz){
@@ -24,21 +31,42 @@ public class Logger implements LoggerInterface{
 	public void setThreadLocal(LoggerInterface li){
 		if (li!=null){
 			threadLocal=true;
+			threadLocalLogger=li;
 			tl.set(li);
 		}
 	}
 
+	public void propagateThreadLocal(){
+		if (threadLocal){
+			if (threadLocalLogger!=null){
+				tl.set(threadLocalLogger);				
+			} else{
+				log.warn("The threadlocal logger is null while propagateThreadLocal");
+			}
+//			setThreadLocal(threadLocalLogger);
+		}		
+	}
+	
+	public void unPropagateThreadLocal(){
+		removeThreadLocal();
+	}
+	
 	public void removeThreadLocal(){
-		threadLocal=false;
+//		This remove the threadlocal for the thread not for the object		
+//		threadLocal=false;
 		tl.remove();
 	}
 
 	private LoggerInterface log(){
 		if (threadLocal){
-			return tl.get();
-		} else {
-			return log;
+			// maybe the readloacal is active but not for this thread ...
+			LoggerInterface ret=tl.get();
+			if (ret!=null){
+				return ret;
+			}
 		}
+		return log;
+
 	}
 
 	public boolean isDebugEnabled(){

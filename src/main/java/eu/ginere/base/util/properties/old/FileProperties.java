@@ -1,4 +1,4 @@
-package eu.ginere.base.util.properties;
+package eu.ginere.base.util.properties.old;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,6 +15,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+
+import eu.ginere.base.util.properties.GlobalFileProperties;
 
 /**
  * Esta clase lee las propiedades de un fichero, ver @see

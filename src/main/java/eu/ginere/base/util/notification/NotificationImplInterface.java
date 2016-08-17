@@ -1,17 +1,11 @@
 package eu.ginere.base.util.notification;
 
+import eu.ginere.base.util.test.TestInterface;
 
-public interface NotificationImplInterface {
 
-	public interface Level {
-		public boolean isEnabled();
-		public void notify(String message,Throwable e);
+public interface NotificationImplInterface extends TestInterface{
 
-	}
+	public boolean isEnabled(Level level);
 
-	public Level getDebug();
-	public Level getInfo();
-	public Level getWarn();
-	public Level getError();
-	public Level getFatal();
+	public void notify(Level fatal, String message, Throwable e);
 }

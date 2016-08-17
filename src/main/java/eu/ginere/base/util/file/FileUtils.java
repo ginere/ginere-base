@@ -24,6 +24,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
+import eu.ginere.base.util.log.LoggerInterface;
+
 public class FileUtils {
 	static Logger log = Logger.getLogger(FileUtils.class);
 
@@ -316,6 +318,39 @@ public class FileUtils {
 	 * @return
 	 */
 	public static boolean verifyDir(File dir,Logger logger){
+		if (dir==null){
+			logger.error("El directorio es nulo.");
+			return false;
+		}
+		String fileName=dir.getAbsolutePath();
+		if (fileName==null){
+			return false;
+		}
+		
+		if (!dir.exists()){
+			logger.error("El path '"+fileName+"' no existe.");
+			return false;
+		}
+
+		if (!dir.isDirectory()){
+			logger.error("El path '"+fileName+"' no es un directorio.");
+			return false;
+		}
+		
+		if (!dir.canRead()){
+			logger.error("No tenemos permisos de lectura en el path '"+fileName+"'.");
+			return false;
+		}
+		
+		if (!dir.canWrite()){
+			logger.error("No tenemos permisos de escritura en el path '"+fileName+"'.");
+			return false;
+		}
+
+		return true;				
+	}
+	
+	public static boolean verifyDir(File dir,LoggerInterface logger){
 		if (dir==null){
 			logger.error("El directorio es nulo.");
 			return false;
@@ -1394,6 +1429,19 @@ public class FileUtils {
 		return file.canRead();
 	}
 
+	public static boolean canReadFile(File file,eu.ginere.base.util.log.Logger logger) {		
+		if(file==null){
+			logger.warn("File is null");
+			return false;
+		}
+
+		if (file.isDirectory()){
+			logger.warn("Is a dir, file:"+file.getAbsolutePath()+"");
+			return false;
+		}
+
+		return file.canRead();
+	}
 	
 	/**
 	 * Devuelve true si es un fichero y se puede leer.
