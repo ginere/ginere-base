@@ -175,6 +175,20 @@ public class GlobalFileProperties {
 		}
 	}
 	
+	static public PropertyDescriptor getDescriptor(String propertyName,PropertyDescriptor defaultValue) throws DaoManagerException {
+		// verifiy and load all the properties if neede
+		loadAll();
+		
+		synchronized (cache) { 
+			if (cache.containsKey(propertyName)){
+				PropertyDescriptor desc=cache.get(propertyName);
+				return desc;
+			} else {
+				return defaultValue;
+			}
+		}
+	}
+	
 	static private String getValue(String propertyName,String description) throws DaoManagerException {
 		PropertyDescriptor desc=getDescriptor(propertyName,description);
 

@@ -12,6 +12,8 @@ import org.apache.log4j.Logger;
 /**
  * @author ventura
  * 
+ * ATTENTION NULL KEYS ARE NOT SUPPORTED. USE OF ConcurrentHashMap.
+ * 
  * This abstract class should be implemented by all the ExpContainer.
  * This allows the ExpContainer to be subscrived this the cleaner and aloow the cleaner.
  * 
@@ -62,13 +64,21 @@ public abstract class AbstractExpContainerMap<T extends ExpContainerObject> {
 	}
 
 	public boolean exists(String id) {
-		return map.containsKey(id);
+		if (id==null){
+			return false;
+		} else {
+			return map.containsKey(id);
+		}
 	}
 
+	public boolean containsKey(String id){
+		return exists(id);
+	}
+		
 	public T get(String id,T defaultValue){
 		T ret;
 		
-		if (map.containsKey(id)){
+		if (exists(id)){
 			ret=map.get(id);
 			
 			if (ret!=null){
@@ -77,7 +87,7 @@ public abstract class AbstractExpContainerMap<T extends ExpContainerObject> {
 			return ret;
 		} else {
 			return defaultValue;
-		}		
+		}
 	}
 	
 	public T get(String id){
@@ -85,13 +95,18 @@ public abstract class AbstractExpContainerMap<T extends ExpContainerObject> {
 	}
 	
 	public T put(String id,T obj){
-		map.put(id,obj);
-		
-		if (obj!=null){
-			obj.setAccessed();
+		// throw exception HERE ?????
+		if (id == null) {
+			return null;
+		} else {
+			map.put(id,obj);
+			
+			if (obj!=null){
+				obj.setAccessed();
+			}
+			
+			return obj;
 		}
-		
-		return obj;
 	}
 
 	/**
@@ -113,17 +128,12 @@ public abstract class AbstractExpContainerMap<T extends ExpContainerObject> {
 	 * @return If not object in the map this retuns null.
 	 */
 	public T remove(String id) {
-		if (map.containsKey(id)){
+		if (exists(id)){
 			return map.remove(id);
 		} else {
 			return null;
 		}
 	}
-
-	public boolean containsKey(String id){
-		return map.containsKey(id);
-	}
-		
 
 	public long size(){
 		return map.size();
